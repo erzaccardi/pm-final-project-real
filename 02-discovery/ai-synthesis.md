@@ -1,17 +1,44 @@
-# AI Synthesis — Product Health & Insights Summary
-
-> **Module 2 · Lab 1.** Repo file `02-discovery/ai-synthesis.md` — part of your submission.
-> Do the lab in the **Module 2 · Exercise 1 Guide** (linked from the Module 2 deck), then click **⬇ Download .md** — it saves as this exact file. Commit it here.
-> It feeds the **Research & Competitive Analysis** slide of your Module 6 final deck, alongside `competitive-and-journey.md`.
+# AI Synthesis, Product Health & Insights Summary (Module 2)
 
 ## Responses
-
-- **Moment of misery / red flag #1:** _(not filled in)_
-- **Moment of misery / red flag #2:** _(not filled in)_
-- **Moment of misery / red flag #3:** _(not filled in)_
-- **Product Health & Insights Summary (Claude's output):** _(not filled in)_
-- **Did the AI catch the specific moment of misery / pain point you found in Step 1?:** _(not filled in)_
-- **Did it smooth over a critical frustration into a generic bullet point?:** _(not filled in)_
-- **Did the AI try to suggest features or a roadmap despite the constraints?:** _(not filled in)_
-- **Logic leak / hallucination #1:** _(not filled in)_
+- **Moment of misery / red flag #1 (e.g., “user gave up after 3 tries”):** Lapsed subscriber (UXR-04) cancelled because the app “became a warehouse”; now watches both of a competitor’s 2 hand-picked films every week. Curation pulled him away, not price.
+- **Moment of misery / red flag #2:** 14-year heavy viewer (UXR-01) scrolled 20 min through 15,000 titles, watched nothing, and went back to a DVD. Scale is burying discovery.
+- **Moment of misery / red flag #3:** Red flag: watchlist doesn’t sync between phone and TV (BUG-1058, Critical, 340+ tickets). User saved a film on the train, it was gone at home, never found it again (UXR-06). Curated picks are worthless if they disappear.
+- **Product Health & Insights Summary (Claude's output):** Product Health & Insights Summary
+Nov 18, 2026 · @Emily Zaccardi
+Sources: 12 user research sessions (UXR-01 to UXR-12, including one older-viewer focus group) and 10 bug reports (BUG-1042 to BUG-1121).
+Executive Summary
+The core playback platform mostly works, but cross-device sync failures and Smart TV instability break viewing sessions at the moment of use and push users directly to competing apps. The bigger problem is experiential: a 15,000-title catalog, recommendations that keep serving the same franchise, and search that only matches exact titles leave users unable to find anything worth watching, which leads to decision fatigue, rewatch loops and, in at least one case, cancellation. Stability defects damage trust once a user has chosen something; discovery failures remove the reason to open the app in the first place. The product delivers access to content, but not confidence in choosing it.
+Thematic Synthesis
+1. Discovery & Choice Overload
+This is the most widespread theme in the research and the one most closely tied to disengagement and churn. Users describe the catalog as a "warehouse": more titles have not made evenings better. Browsing routinely ends without anything being played, and casual viewers have stopped looking for new content and fall back on familiar shows. Older and lower-intensity viewers say the volume of choice makes them anxious and that they want a single trusted suggestion rather than more options. The home screen leans heavily toward new, high-energy releases, with no way to browse by mood or occasion (for example, "quiet Sunday" or "something my book club would like").
+• Choice paralysis / browse-without-watching: sessions of about 20 minutes ending with no playback; one user went back to physical media. Reported by heavy, casual and lapsed users alike. Critical
+• Disengagement from discovery: users default to rewatching a small set of comfort titles because finding something new "feels like a chore." High
+• No mood- or context-based browsing: home rows are organized by recency and genre, not by how users actually decide what to watch. High
+• Decision anxiety among older viewers: three of six focus group participants explicitly asked to "just be told what's good tonight." High
+• Home screen tone skews loud and new: under-serves viewers who want quieter or more considered content. Medium
+2. Algorithmic Curation & Trust
+Users do not see the recommendation engine as working for them. The "Because you watched" logic treats one viewing as a genre preference and returns near-duplicates from the same franchise, so users feel reduced to a category rather than understood as a person. More broadly, users say the algorithm is optimized to keep them scrolling rather than to help them find something good, and they compare it unfavorably with recommendations from friends and with human curation. A competitor's low-volume, hand-picked approach (two films a week by email) is cited as the reason one subscriber left, and that user watches both picks every week.
+• Low-diversity, franchise-repetitive recommendations (BUG-1091): one action film watched leads to three sequels recommended; users flag the row as "repetitive." High
+• Trust deficit in algorithmic recommendations: users trust friends and human curators more and see the system as engagement-driven, not value-driven. High
+• Competitive exposure to curated alternatives: a lapsed subscriber attributes churn directly to a rival's curation model. High
+• Loss of "hidden gem" serendipity: film enthusiasts miss surfacing of lesser-known titles. Medium
+3. Search & Intent Expression
+When browsing fails, search should be the fallback, but it only works for users who already know the exact title. Descriptive or natural-language queries return irrelevant results; a query for a "slow quiet French drama" returned an action blockbuster. This leaves users with no reliable way to describe what they want, which makes the discovery problems above worse. The bug is logged as Medium, but its user impact is closer to High because it removes the main way out of choice overload.
+• Natural-language and descriptive search returns irrelevant results (BUG-1080): only exact-title matching works. High (logged as Medium)
+4. Platform Sync & Cross-Device Continuity
+Cross-device continuity is the most severe technical failure by volume and has a direct effect on completion. Users who save or start content on mobile or tablet can't pick it up on TV, so saved titles are lost and partially watched titles are abandoned. Both research participants affected said they never got back to the content: in one case it was never found again, in the other it was never finished. This is the clearest example of a technical defect directly destroying viewing value.
+• "My List" / watchlist not syncing between mobile and TV (BUG-1058): 340+ support tickets this quarter; saved titles are effectively lost. Critical
+• Resume position not saved across devices (BUG-1061): titles restart at 0:00 on a second device; the top driver of "couldn't finish" complaints. High
+5. Technical Stability & Performance
+Playback and launch performance problems are concentrated on Smart TV, the main living-room surface. A buffering failure on Samsung Tizen 2021+ devices reproduces in most attempts and ends sessions entirely, and affected users switch straight to a competing app. Slow cold starts on older TVs add friction before a session even begins. Autoplay trailer behavior, which ignores volume settings and can't be turned off, is a smaller defect technically but a strong source of irritation: one power user muted the TV five times in a single session.
+• Playback drops to home screen after ~60s of buffering on Samsung Tizen 2021+ (BUG-1042): 7/10 reproduction rate; users abandon to competitors. High
+• Autoplay trailers play at full volume, ignore the last volume setting, and can't be disabled (BUG-1077): high-frequency annoyance during browsing. Medium
+• Cold-start time averages 11s on older TVs (BUG-1110): the app is perceived as "slow to open." Medium
+Minor Technical Debt
+Minor Technical Debt (Low): intermittent subtitle drift of about 2s on titles over 90 minutes (BUG-1099); grey placeholder thumbnails on slow connections (BUG-1104); finished titles lingering in Continue Watching for up to 48h (BUG-1121).
+- **Did the AI catch the specific moment of misery / pain point you found in Step 1?:** The AI focused heavily on the feedback that indexes on technical weakness and not enough on the behavioral problems/opporutnties.
+- **Did it smooth over a critical frustration into a generic bullet point?:** Yes, the summarization of algorithmic curation and trust was usefully but it didn't seem to go deep enough on the why behind a user proble/opportuity and instead more on the technical fumble. For example, focusing on the "for you" section failing to expand genres for the user. This tells part of the story, but it does not really address decision fatigue or the documented interest of thoughtful curation over lookalike curation.  For this topic, "loss of hidden gem serendipty" was listed as a bottom bullet, and I think there is actually a lot more to surface out of that insight rather than than treating it as a list-ender.
+- **Did the AI try to suggest features or a roadmap despite the constraints?:** It did try to suggest expanding the thematic scope beyond "novelty" and more into the technical stability theme.
+- **Logic leak / hallucination #1 (e.g., “AI suggested a new search bar feature, roadmap leak”):** The emphasis on performance issues seem noteworthy but it seems to me that they are not really connected to the scope of work that would be needed for validation of the MVP work around the new hypothesis at play, which centers around brand authority. Performance is important but it is not a unique problem, and the other issues could be explored as a prioity, knowing that performance could be addressed in parallel or afterwards (given the potential for smaller cohort rollout etc)
 - **Logic leak / hallucination #2:** _(not filled in)_
