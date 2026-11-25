@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StreamLine Spotlight · Roadmap</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --ink: #1b1b1f;
+    --ink-2: #55565e;
+    --ink-3: #8a8b93;
+    --line: #e4e2dc;
+    --accent: #5b3df5;
+    --accent-soft: #eeeaff;
+
+    --qw: #1f8a5b;  --qw-bg: #e3f4ec;
+    --mp: #2a63d4;  --mp-bg: #e4ecfb;
+    --fi: #a86a00;  --fi-bg: #fbf0d9;
+    --ts: #c2412d;  --ts-bg: #fbe6e2;
+
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,20,30,.05), 0 2px 8px rgba(20,20,30,.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), #9b6bff);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 18px;
+  }
+  h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-2); font-size: 14px; margin-top: 2px; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    font-size: 12px; padding: 6px 10px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--ink-2);
+  }
+  .pill strong { color: var(--ink); font-weight: 600; }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 12px 14px; margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .filters .label { font-size: 12px; color: var(--ink-3); margin-right: 4px; text-transform: uppercase; letter-spacing: .06em; }
+  .chip {
+    font: inherit; font-size: 13px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    padding: 5px 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;
+    transition: all .15s ease;
+  }
+  .chip:hover { border-color: var(--ink-3); }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  .search {
+    font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--line);
+    border-radius: 8px; width: 180px; background: var(--bg);
+  }
+  .search:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .btn {
+    font: inherit; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+  }
+  .btn:hover { color: var(--ink); border-color: var(--ink-3); }
+
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .board { grid-template-columns: 1fr; } }
+
+  .lane {
+    background: #efede8; border-radius: 14px; padding: 14px; min-height: 220px;
+    display: flex; flex-direction: column; gap: 10px; transition: background .15s ease, outline .15s ease;
+    outline: 2px dashed transparent; outline-offset: -2px;
+  }
+  .lane.drag-over { background: var(--accent-soft); outline-color: var(--accent); }
+  .lane-head { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 4px 6px; }
+  .lane-title { font-weight: 700; font-size: 14px; letter-spacing: .08em; }
+  .lane-title .count {
+    font-weight: 600; font-size: 12px; color: var(--ink-3); margin-left: 6px; letter-spacing: 0;
+  }
+  .lane-sub { font-size: 12px; color: var(--ink-3); }
+  .lane.now .lane-title { color: var(--accent); }
+  .lane-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .empty {
+    font-size: 13px; color: var(--ink-3); text-align: center; padding: 24px 8px;
+    border: 1px dashed #d6d3cb; border-radius: 10px;
+  }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 14px 12px; box-shadow: var(--shadow); cursor: grab;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    border-left: 4px solid var(--line);
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(20,20,30,.08); }
+  .card.dragging { opacity: .4; cursor: grabbing; }
+  .card.hidden { display: none; }
+  .card[data-q="qw"] { border-left-color: var(--qw); }
+  .card[data-q="mp"] { border-left-color: var(--mp); }
+  .card[data-q="fi"] { border-left-color: var(--fi); }
+  .card[data-q="ts"] { border-left-color: var(--ts); }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+  .card-id { font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .05em; }
+  .card-name { font-weight: 650; font-size: 15px; margin: 2px 0 0; letter-spacing: -0.005em; }
+  .card-why { font-size: 13.5px; color: var(--ink-2); margin: 0; }
+  .card-why.clamp {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .more {
+    font: inherit; font-size: 12px; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer;
+  }
+  .more:hover { text-decoration: underline; }
+  .move {
+    font: inherit; font-size: 12px; color: var(--ink-2); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; cursor: pointer;
+  }
+
+  .badge {
+    font: inherit; font-size: 11.5px; font-weight: 600; white-space: nowrap; cursor: pointer;
+    padding: 4px 9px; border-radius: 999px; border: 0;
+  }
+  .badge[data-q="qw"] { color: var(--qw); background: var(--qw-bg); }
+  .badge[data-q="mp"] { color: var(--mp); background: var(--mp-bg); }
+  .badge[data-q="fi"] { color: var(--fi); background: var(--fi-bg); }
+  .badge[data-q="ts"] { color: var(--ts); background: var(--ts-bg); }
+  .badge:hover { filter: brightness(.96); }
+
+  .cut-section { margin-top: 28px; }
+  .cut-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; padding: 0 4px; }
+  .cut-head h2 { font-size: 14px; letter-spacing: .08em; margin: 0; color: var(--ts); }
+  .cut-head .lane-sub { font-size: 12px; }
+  .lane.cut {
+    background: #f3ecea; min-height: 120px;
+  }
+  .lane.cut .lane-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 900px) { .lane.cut .lane-list { grid-template-columns: 1fr; } }
+  .lane.cut .card { opacity: .85; }
+  .lane.cut .card-name { text-decoration: line-through; text-decoration-color: rgba(194,65,45,.45); text-decoration-thickness: 1.5px; }
+
+  .legend {
+    margin-top: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  @media (max-width: 900px) { .legend { grid-template-columns: repeat(2, 1fr); } }
+  .legend-item {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    font-size: 12.5px; color: var(--ink-2);
+  }
+  .legend-item .badge { cursor: default; margin-bottom: 4px; display: inline-block; }
+
+  .hint { font-size: 12px; color: var(--ink-3); margin-top: 18px; text-align: center; }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: #fff; font-size: 13px; padding: 8px 14px; border-radius: 8px;
+    opacity: 0; pointer-events: none; transition: all .2s ease;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media print {
+    .toolbar, .hint, .move, .more, .toast { display: none !important; }
+    body { background: #fff; }
+    .card-why.clamp { -webkit-line-clamp: unset; display: block; }
+    .lane { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <h1>StreamLine Spotlight · Roadmap</h1>
+        <div class="sub">Helping young professionals find something worth watching without decision or orientation fatigue</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span class="pill">Team <strong>2 Eng + 1 Design</strong></span>
+      <span class="pill">North star <strong>30 min+ session</strong></span>
+      <span class="pill">Guardrail <strong>3+ min browse</strong></span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <span class="label">Filter</span>
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="qw"><span class="dot" style="background:var(--qw)"></span>Quick Win</button>
+      <button class="chip" data-filter="mp"><span class="dot" style="background:var(--mp)"></span>Major Project</button>
+      <button class="chip" data-filter="fi"><span class="dot" style="background:var(--fi)"></span>Fill-In</button>
+      <button class="chip" data-filter="ts"><span class="dot" style="background:var(--ts)"></span>Time Sinker</button>
+    </div>
+    <div class="actions">
+      <input class="search" id="search" type="search" placeholder="Search features…" aria-label="Search features">
+      <button class="btn" id="expandAll">Expand all</button>
+      <button class="btn" id="print">Print</button>
+      <button class="btn" id="reset" title="Restore the original prioritization">Reset</button>
+    </div>
+  </div>
+
+  <div class="board">
+    <section class="lane now" data-lane="now">
+      <div class="lane-head">
+        <div class="lane-title">NOW<span class="count" data-count="now"></span></div>
+        <div class="lane-sub">3-week sprint</div>
+      </div>
+      <div class="lane-list"></div>
+    </section>
+    <section class="lane" data-lane="next">
+      <div class="lane-head">
+        <div class="lane-title">NEXT<span class="count" data-count="next"></span></div>
+        <div class="lane-sub">Following 1–2 sprints</div>
+      </div>
+      <div class="lane-list"></div>
+    </section>
+    <section class="lane" data-lane="later">
+      <div class="lane-head">
+        <div class="lane-title">LATER<span class="count" data-count="later"></span></div>
+        <div class="lane-sub">Backlog</div>
+      </div>
+      <div class="lane-list"></div>
+    </section>
+  </div>
+
+  <div class="cut-section">
+    <div class="cut-head">
+      <h2>CUT LIST<span class="count" data-count="cut" style="font-size:12px;color:var(--ink-3);margin-left:6px;letter-spacing:0"></span></h2>
+      <div class="lane-sub">Deliberately not building, and why</div>
+    </div>
+    <section class="lane cut" data-lane="cut">
+      <div class="lane-list"></div>
+    </section>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="badge" data-q="qw">Quick Win</span><br>High value, low effort. Do first.</div>
+    <div class="legend-item"><span class="badge" data-q="mp">Major Project</span><br>High value, high effort. Plan and invest.</div>
+    <div class="legend-item"><span class="badge" data-q="fi">Fill-In</span><br>Low value, low effort. Use spare capacity.</div>
+    <div class="legend-item"><span class="badge" data-q="ts">Time Sinker</span><br>Low value, high effort. Avoid or defer.</div>
+  </div>
+
+  <p class="hint">Drag cards between lanes, or use each card's menu. Click a badge to change its quadrant. Your changes are saved in this browser.</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  const QUADRANTS = {
+    qw: "Quick Win",
+    mp: "Major Project",
+    fi: "Fill-In",
+    ts: "Time Sinker"
+  };
+  const Q_ORDER = ["qw", "mp", "fi", "ts"];
+  const LANES = { now: "Now", next: "Next", later: "Later", cut: "Cut" };
+  const STORAGE_KEY = "streamline-spotlight-roadmap-v1";
+
+  const DEFAULT = [
+    { id: "A1", name: "Spotlight Curated Rail", lane: "now", q: "qw",
+      why: "Medium value, because without personalization this feature might reinforce the company promoting random things instead of personalized things. It does help with quick visual orientation scaffolding that will make the personalized work more noticeable." },
+    { id: "A3", name: "Hidden Gem Badge", lane: "now", q: "fi",
+      why: "Low effort, paired with a wink at a new lens for looking at the content at a glance." },
+
+    { id: "A2", name: "'Why You'll Love This' Label", lane: "next", q: "qw",
+      why: "Targets decision fatigue and signals immediately that something has changed in the personalized browsing experience. We are not relying on the user to poke around long enough to realize things are more personalized." },
+    { id: "A5", name: "Personalized Spotlight Queue", lane: "next", q: "mp",
+      why: "Closely aligns with the persona's pain point." },
+    { id: "A6", name: "Spotlight Digest Email", lane: "next", q: "fi",
+      why: "Bumped to Next because it can help seed a fresh mindset for the user by exposing them to the new features." },
+
+    { id: "A4", name: "Mood-Based Entry Point", lane: "later", q: "mp",
+      why: "Good gateway experience to keep attention and potentially lead the user to a selection that matches." },
+    { id: "A10", name: "Offline Download (Spotlight)", lane: "later", q: "ts",
+      why: "Doesn't align with the core issues for this persona, but it can prevent utility frustration once we get what we want: the user treating our platform as their go-to." },
+
+    { id: "A7", name: "Curator Profiles", lane: "cut", q: "ts",
+      why: "Not clear that this feature aligns with the core problem." },
+    { id: "A8", name: "Watch Party (Spotlight)", lane: "cut", q: "ts",
+      why: "Group viewing is not associated with pain for this persona, and coordinating with other people means the experience hinges on multi-person error or success." },
+    { id: "A9", name: "Advanced Filter Engine", lane: "cut", q: "fi",
+      why: "Lower value without some of the other work done first. On its own, it could just reinforce the manual effort required to find a liked title." }
+  ];
+
+  let state = load();
+  let filter = "all";
+  let query = "";
+  let expandedAll = false;
+  const expanded = new Set();
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (Array.isArray(saved) && saved.length) return saved;
+      }
+    } catch (e) {}
+    return clone(DEFAULT);
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function clone(x) { return JSON.parse(JSON.stringify(x)); }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove("show"), 1600);
+  }
+
+  function cardHTML(f) {
+    const isOpen = expandedAll || expanded.has(f.id);
+    const long = f.why.length > 140;
+    const options = Object.entries(LANES)
+      .map(([k, v]) => `<option value="${k}" ${k === f.lane ? "selected" : ""}>${v}</option>`).join("");
+    return `
+      <article class="card" draggable="true" data-id="${esc(f.id)}" data-q="${f.q}">
+        <div class="card-top">
+          <div>
+            <div class="card-id">${esc(f.id)}</div>
+            <h3 class="card-name">${esc(f.name)}</h3>
+          </div>
+          <button class="badge" data-q="${f.q}" data-action="cycle" title="Click to change quadrant">${QUADRANTS[f.q]}</button>
+        </div>
+        <p class="card-why ${isOpen ? "" : "clamp"}">${esc(f.why)}</p>
+        <div class="card-foot">
+          ${long ? `<button class="more" data-action="toggle">${isOpen ? "Show less" : "Read more"}</button>` : `<span></span>`}
+          <select class="move" data-action="move" aria-label="Move ${esc(f.name)}">${options}</select>
+        </div>
+      </article>`;
+  }
+
+  function matches(f) {
+    const okFilter = filter === "all" || f.q === filter;
+    const q = query.trim().toLowerCase();
+    const okQuery = !q || (f.id + " " + f.name + " " + f.why).toLowerCase().includes(q);
+    return okFilter && okQuery;
+  }
+
+  function render() {
+    document.querySelectorAll(".lane").forEach(laneEl => {
+      const lane = laneEl.dataset.lane;
+      const list = laneEl.querySelector(".lane-list");
+      const items = state.filter(f => f.lane === lane);
+      const visible = items.filter(matches);
+      list.innerHTML = visible.length
+        ? visible.map(cardHTML).join("")
+        : `<div class="empty">${items.length ? "No cards match this filter" : (lane === "cut" ? "Nothing cut yet. Drop a card here." : "Drop a card here")}</div>`;
+      const countEl = document.querySelector(`[data-count="${lane}"]`);
+      if (countEl) countEl.textContent = items.length;
+    });
+  }
+
+  function moveCard(id, lane, beforeId) {
+    const idx = state.findIndex(f => f.id === id);
+    if (idx < 0) return;
+    const [card] = state.splice(idx, 1);
+    const changed = card.lane !== lane;
+    card.lane = lane;
+    let insertAt = state.length;
+    if (beforeId) {
+      const b = state.findIndex(f => f.id === beforeId);
+      if (b >= 0) insertAt = b;
+    } else {
+      let last = -1;
+      state.forEach((f, i) => { if (f.lane === lane) last = i; });
+      insertAt = last + 1;
+    }
+    state.splice(insertAt, 0, card);
+    save();
+    render();
+    if (changed) toast(`${card.id} moved to ${LANES[lane]}`);
+  }
+
+  // Click interactions
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const card = btn.closest(".card");
+    if (!card) return;
+    const id = card.dataset.id;
+    const f = state.find(x => x.id === id);
+    if (btn.dataset.action === "cycle") {
+      const next = Q_ORDER[(Q_ORDER.indexOf(f.q) + 1) % Q_ORDER.length];
+      f.q = next;
+      save(); render();
+      toast(`${f.id} is now ${QUADRANTS[next]}`);
+    } else if (btn.dataset.action === "toggle") {
+      expanded.has(id) ? expanded.delete(id) : expanded.add(id);
+      render();
+    }
+  });
+
+  document.addEventListener("change", e => {
+    const sel = e.target.closest('[data-action="move"]');
+    if (!sel) return;
+    const id = sel.closest(".card").dataset.id;
+    moveCard(id, sel.value);
+  });
+
+  // Drag and drop
+  let dragId = null;
+  document.addEventListener("dragstart", e => {
+    const card = e.target.closest(".card");
+    if (!card) return;
+    dragId = card.dataset.id;
+    card.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    try { e.dataTransfer.setData("text/plain", dragId); } catch (err) {}
+  });
+  document.addEventListener("dragend", e => {
+    const card = e.target.closest(".card");
+    if (card) card.classList.remove("dragging");
+    document.querySelectorAll(".lane.drag-over").forEach(l => l.classList.remove("drag-over"));
+    dragId = null;
+  });
+  document.querySelectorAll(".lane").forEach(laneEl => {
+    laneEl.addEventListener("dragover", e => {
+      if (!dragId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      laneEl.classList.add("drag-over");
+    });
+    laneEl.addEventListener("dragleave", e => {
+      if (!laneEl.contains(e.relatedTarget)) laneEl.classList.remove("drag-over");
+    });
+    laneEl.addEventListener("drop", e => {
+      e.preventDefault();
+      laneEl.classList.remove("drag-over");
+      if (!dragId) return;
+      const target = e.target.closest(".card");
+      let beforeId = null;
+      if (target && target.dataset.id !== dragId) {
+        const rect = target.getBoundingClientRect();
+        const isGrid = laneEl.dataset.lane === "cut";
+        const after = isGrid
+          ? e.clientX > rect.left + rect.width / 2
+          : e.clientY > rect.top + rect.height / 2;
+        if (after) {
+          const sib = target.nextElementSibling;
+          beforeId = sib && sib.classList.contains("card") ? sib.dataset.id : null;
+        } else {
+          beforeId = target.dataset.id;
+        }
+      }
+      moveCard(dragId, laneEl.dataset.lane, beforeId);
+    });
+  });
+
+  // Toolbar
+  document.getElementById("filters").addEventListener("click", e => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    filter = chip.dataset.filter;
+    document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === chip));
+    render();
+  });
+  document.getElementById("search").addEventListener("input", e => { query = e.target.value; render(); });
+  document.getElementById("expandAll").addEventListener("click", e => {
+    expandedAll = !expandedAll;
+    expanded.clear();
+    e.target.textContent = expandedAll ? "Collapse all" : "Expand all";
+    render();
+  });
+  document.getElementById("print").addEventListener("click", () => window.print());
+  document.getElementById("reset").addEventListener("click", () => {
+    state = clone(DEFAULT);
+    save(); render();
+    toast("Roadmap reset to original prioritization");
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
