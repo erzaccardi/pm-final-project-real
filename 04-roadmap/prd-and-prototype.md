@@ -74,3 +74,5 @@
 
 ---
 **Builder hook:** Build a working prototype based on this PRD. Use the User Story as the core flow, Functional Requirements as build constraints, and prioritize speed and clarity over visual complexity.
+
+https://lovable.dev/preview/Uw4X6WTxnmHeBnF09wtPQK7cVztXWmOG
